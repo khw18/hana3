@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>2.주급 계산</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .name {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<table id="wage-table">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이름</th>
+        <th>근무시간</th>
+        <th>시간당급여액</th>
+        <th>기본액</th>
+        <th>초과수당</th>
+        <th>합계</th>
+        <th>세액</th>
+        <th>실지불액</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="9"></td>
+    </tr>
+    <tr>
+        <td colspan="3">총지불액</td>
+        <td id="total-pay"></td>
+    </tr>
+    </tfoot>
+</table>
+
+<script>
+    window.onload = function () {
+        var data = {
+            "base_time": 20,
+            "list": [
+                {"id": 1, "username": "홍길동", "work_time": 40, "per_pay": 10000},
+                {"id": 2, "username": "송민헌", "work_time": 20, "per_pay": 20000},
+                {"id": 3, "username": "장길산", "work_time": 30, "per_pay": 30000},
+                {"id": 4, "username": "임꺽정", "work_time": 10, "per_pay": 40000},
+                {"id": 5, "username": "강민구", "work_time": 30, "per_pay": 10000}
+            ]
+        };
+        var table = document.getElementById('wage-table');
+        var totalPay = 0;
+        data.list.forEach(function (item) {
+            var overtime = Math.max(0, item.work_time - data.base_time);
+            var basePay = item.per_pay * item.work_time;
+            var overtimePay = item.per_pay * overtime * 0.5;
+            var total = basePay + overtimePay;
+            var tax = total * 0.033;
+            var netPay = total - tax;
+
+            totalPay += netPay;
+
+            var row = document.createElement('tr');
+            row.innerHTML =
+                '<td>' + item.id + '</td>' +
+                '<td class="name">' + item.username + '</td>' +
+                '<td>' + item.work_time + '</td>' +
+                '<td>' + item.per_pay.toLocaleString() + '</td>' +
+                '<td>' + basePay.toLocaleString() + '</td>' +
+                '<td>' + overtimePay.toLocaleString() + '</td>' +
+                '<td>' + total.toLocaleString() + '</td>' +
+                '<td>' + tax.toLocaleString() + '</td>' +
+                '<td>' + netPay.toLocaleString() + '</td>';
+            table.querySelector('tbody').appendChild(row);
+        });
+        document.getElementById('total-pay').textContent = totalPay.toLocaleString();
+    };
+</script>
+</body>
+</html>
